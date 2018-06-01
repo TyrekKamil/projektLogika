@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace prodzekt.Data
+namespace FormulaChecker.Data
 {
     public class Token
     {
+
+        public enum Types { EOF, VAR, AND, OR, RIMPL, LIMPL, EQV, NEG, LPAREN, RPAREN};
         public string type;
         public char value;
         public Token(string typ, char wartosc) { type = typ; value = wartosc; }

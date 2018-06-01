@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using prodzekt.Data;
+using FormulaChecker.Data;
 
 namespace WpfApp1
 {
@@ -26,26 +26,27 @@ namespace WpfApp1
             InitializeComponent();
         }
 
-
-
-        private void andSymbolButton_Click(object sender, RoutedEventArgs e)
+        void setCursorPosition(string insertText)
         {
-            string insertText = "\\u2227";
-            insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
             var selectionIndex = textBoxFormula.SelectionStart;
             textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
             textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
             textBoxFormula.Focus();
         }
 
+        private void andSymbolButton_Click(object sender, RoutedEventArgs e)
+        {
+            string insertText = "\\u2227";
+            insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
+            setCursorPosition(insertText);
+            
+        }
+
         private void orSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             string insertText = "\\u2228";
             insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
-            var selectionIndex = textBoxFormula.SelectionStart;
-            textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
-            textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
-            textBoxFormula.Focus();
+            setCursorPosition(insertText);
 
         }
 
@@ -53,40 +54,28 @@ namespace WpfApp1
         {
             string insertText = "\\u21d0";
             insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
-            var selectionIndex = textBoxFormula.SelectionStart;
-            textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
-            textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
-            textBoxFormula.Focus();
+            setCursorPosition(insertText);
         }
 
         private void rightImplySymbolButton_Click(object sender, RoutedEventArgs e)
         {
             string insertText = "\\u21d2";
             insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
-            var selectionIndex = textBoxFormula.SelectionStart;
-            textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
-            textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
-            textBoxFormula.Focus();
+            setCursorPosition(insertText);
         }
 
         private void eqSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             string insertText = "\\u21d4";
             insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
-            var selectionIndex = textBoxFormula.SelectionStart;
-            textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
-            textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
-            textBoxFormula.Focus();
+            setCursorPosition(insertText);
         }
 
         private void negationSymbolButton_Click(object sender, RoutedEventArgs e)
         {
             string insertText = "\\u00AC";
             insertText = System.Text.RegularExpressions.Regex.Unescape(insertText);
-            var selectionIndex = textBoxFormula.SelectionStart;
-            textBoxFormula.Text = textBoxFormula.Text.Insert(selectionIndex, insertText);
-            textBoxFormula.SelectionStart = selectionIndex + insertText.Length;
-            textBoxFormula.Focus();
+            setCursorPosition(insertText);
         }
 
         private void resetButton_Click(object sender, RoutedEventArgs e)
@@ -102,12 +91,13 @@ namespace WpfApp1
             }
         }
 
-        private void checkButton_Click(object sender, RoutedEventArgs e)
+        private void checkExpression(String expression)
         {
+            Lexer lexer = new Lexer(expression);
+            Interpreter interpreter = new Interpreter(lexer);
 
-            Parser parser = new Parser(textBoxFormula.Text);
             string msgtext;
-            bool result = parser.checkIfValid();
+            bool result = interpreter.checkIfValid();
             if (result)
             {
                 msgtext = "Zadana formuła jest poprawna";
@@ -117,6 +107,20 @@ namespace WpfApp1
                 msgtext = "Zadana formuła nie jest poprawna";
             }
             MessageBox.Show(msgtext);
+
+
+        }
+
+        private void checkButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            if(textBoxFormula.Text == "")
+            {
+                MessageBox.Show("Podaj formułę!");
+            }
+            else {
+                checkExpression(textBoxFormula.Text);
+            }
         }
 
  
